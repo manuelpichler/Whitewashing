@@ -20,10 +20,7 @@ use Symfony\Component\DependencyInjection\Loader\Loader;
 
 class WhitewashingBlogBundle extends Bundle
 {
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
+    protected $namespace = __NAMESPACE__;
 
     public function getPath()
     {
