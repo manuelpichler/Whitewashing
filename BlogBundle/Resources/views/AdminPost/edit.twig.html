@@ -1,11 +1,11 @@
-{% extends 'BlogBundle::adminLayout.twig.html' %}
+{% extends 'WhitewashingBlogBundle::adminLayout.twig.html' %}
 
 {% block content %}
     <form method="post" id="writepost" class="wwform"  action="{{ path('blog_post_edit', {'id': post.id}) }}">
 
         <fieldset>
             <legend>Edit Post</legend>
-            {{ writeForm|render }}
+            {{ form_field(writeForm) }}
         </fieldset>
     
         <input type="submit" name="submit_thenedit" value="Save" />

@@ -227,7 +227,23 @@ class Post
         return $this->categories;
     }
 
+    public function updateTags(array $newTags)
+    {
+        foreach ($this->tags AS $oldTag) {
+            if (!in_array($oldTag, $newTags)) {
+                $this->removeTag($oldTag);
+            }
+        }
+        foreach ($newTags AS $tag) {
+            $this->addTag($tag);
+        }
+    }
+
     public function addTag(Tag $tag) {
+        if ($this->tags->contains($tag)) {
+            return;
+        }
+
         $this->tags[] = $tag;
     }
 
@@ -255,13 +271,6 @@ class Post
     public function getBlog()
     {
         return $this->blog;
-    }
-
-    /**
-     * @param Blog $blog
-     */
-    private function setBlog(Blog $blog) {
-        $this->blog = $blog;
     }
 
     /**
@@ -305,60 +314,5 @@ class Post
     public function created()
     {
         return $this->created;
-    }
-
-    /**
-     *
-     * @param Zend_Feed_Writer $writer
-     */
-    public function publishToFeed(\Zend\Feed\Writer\Feed $feed, UrlGenerator $generator)
-    {
-        $entry = $feed->createEntry();
-
-        $author = $this->getAuthor();
-
-        $entry->setId($generator->generatePostUrl($this));
-        $entry->setTitle($this->getHeadline());
-        $entry->setLink($generator->generatePostUrl($this));
-        $entry->addAuthor(array(
-            'name'  => $author->getName(),
-            'email' => $author->getEmail(),
-            'uri'   => 'http://www.example.com',
-        ));
-
-        $entry->setDateModified($this->created()->format('U'));
-        $entry->setDateCreated($this->created()->format('U'));
-        $entry->setDescription($this->getHeadline());
-        $entry->setContent($this->getText());
-
-        $feed->addEntry($entry);
-    }
-
-    /**
-     * Used by ezcSearch to get searchable values
-     *
-     * @internal
-     * @return array
-     */
-    public function getState()
-    {
-        return array(
-            'id' => $this->id,
-            'headline' => $this->headline,
-            'text' => $this->text,
-        );
-    }
-
-    /**
-     * Used by ezcSearch to set values after reconstruction
-     *
-     * @internal
-     * @param array $state
-     */
-    public function setState($state)
-    {
-        foreach ($state AS $k => $v) {
-            $this->$k = $v;
-        }
     }
 }
